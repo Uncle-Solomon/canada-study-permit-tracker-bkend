@@ -19,6 +19,12 @@ export const createCase = async (req: CustomRequest, res: Response) => {
       );
     }
 
+    const caseExists = await Case.findOne({ username });
+
+    if (caseExists) {
+      throw badRequestError("One user is only allowed to create one case");
+    }
+
     const newCase = new Case(caseData);
     const savedCase = await newCase.save();
 

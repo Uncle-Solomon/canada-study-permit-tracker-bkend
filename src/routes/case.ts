@@ -12,6 +12,16 @@ export const caseRoute = express.Router();
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *      bearerAuth:            # arbitrary name for the security scheme
+ *        type: http
+ *        scheme: bearer
+ *        bearerFormat: JWT    # optional, arbitrary value for documentation purpose
+ */
+
+/**
+ * @swagger
+ * components:
  *   schemas:
  *     Case:
  *       type: object
@@ -55,6 +65,8 @@ export const caseRoute = express.Router();
  *   get:
  *     summary: Get all cases
  *     tags: [Cases]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: List of all cases
@@ -75,6 +87,8 @@ caseRoute.get("/", validateUser, getAllCases);
  *   post:
  *     summary: Create a new case
  *     tags: [Cases]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -97,6 +111,8 @@ caseRoute.post("/", validateUser, createCase);
  *   get:
  *     summary: Get a case by username
  *     tags: [Cases]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: username
  *         in: path
@@ -124,11 +140,8 @@ caseRoute.get("/:username", validateUser, getCaseByUsername);
  *   put:
  *     summary: Update a case
  *     tags: [Cases]
- *     parameters:
- *       - name: username
- *         in: path
- *         required: true
- *         type: string
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
