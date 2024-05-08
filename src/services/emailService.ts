@@ -1,38 +1,47 @@
-import { SERVICE_ID, TEMPLATE_ID, USER_ID } from "../utils/config";
+import * as nodemailer from "nodemailer";
+import { PASSWORD, USER_ID } from "../utils/config";
 
-export const sendEmail = async (
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: USER_ID,
+    pass: PASSWORD,
+  },
+});
+
+export const sendEmail = (
   username: string,
-  secretKey: string,
   email: string,
-  title: string
+  secretKey: string
 ) => {
   try {
-    const response = await fetch(
-      "https://api.emailjs.com/api/v1.0/email/send",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          service_id: SERVICE_ID, // Replace with your service ID
-          template_id: TEMPLATE_ID, // Replace with your template ID
-          user_id: USER_ID, // Replace with your user ID
-          template_params: {
-            title: title,
-            to_email: email,
-            to_name: username,
-            message: secretKey,
-            "g-recaptcha-response": "03AHJ_ASjnLA214KSNKFJAK12sfKASfehbmfd...", // Remove if not applicable
-          },
-        }),
+    const mailOptions = {
+      from: USER_ID,
+      to: email,
+      subject: "Secret Key for Email Validation",
+      text: `
+Hello ${username},
+
+This email contains your secret key for email validation: 
+
+${secretKey}
+
+Please keep this key confidential and do not share it with anyone.
+
+Best Wishes,
+The CSPT Team
+`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email: ", error);
+      } else {
+        console.log("Email sent: ", info.response);
       }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Email sending failed with status: ${response.status}`);
-    }
-
-    console.log("Email sent successfully!");
-  } catch (error) {
-    console.error("Email service error:", error);
-  }
+    });
+  } catch (error) {}
 };

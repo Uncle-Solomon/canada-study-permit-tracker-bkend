@@ -4,7 +4,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
 import { swaggerSpec } from "./docs";
-import { sendEmail } from "./services/emailService";
+import { authRoute } from "./routes/auth";
+import { caseRoute } from "./routes/case";
 
 // Create express app instance
 const app = express();
@@ -20,11 +21,11 @@ app.use(
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/cases", caseRoute);
 
 //Server Landing Page
 app.get("/", (req: Request, res: Response) => {
-  sendEmail("solom,on", "DDDDD", "amehsolomon46@gmail.com", "fff");
   res.send(
     "The API for Canada Study Permit Tracker, developed by Ameh Solomon Onyeke (A.S.O)"
   );

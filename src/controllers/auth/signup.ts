@@ -1,14 +1,19 @@
 import { Request, Response } from "express";
-import { badRequestError, internalServerError } from "../../utils/error";
 import { StatusCodes } from "http-status-codes";
 import { errorResponse, successResponse } from "../../utils/customResponse";
 import { User } from "../../models/User";
 import { hashfunction } from "../../helpers/hash";
 import validator from "validator";
+import { badRequestError, internalServerError } from "../../utils/error";
+import { generateSecretKey } from "../../helpers/generateSecretKey";
+import { sendEmail } from "../../services/emailService";
 
 export const signup = async (req: Request, res: Response) => {
   try {
     let { email, username, password } = req.body;
+    console.log(req.body);
+    let verified = false;
+    const secretKey = generateSecretKey(username, email);
 
     if (!email || !password || !username || !validator.isEmail(email)) {
       throw badRequestError(
@@ -22,10 +27,12 @@ export const signup = async (req: Request, res: Response) => {
       throw badRequestError("This user already exists");
     }
 
-    const user = new User({ email, username, password });
+    const user = new User({ email, username, password, secretKey, verified });
     user.password = await hashfunction(user.password);
     user.email = await hashfunction(user.email);
     const response = await user.save();
+
+    sendEmail(username, email, secretKey);
 
     if (!response) {
       throw internalServerError("User signup was unsuccessful");

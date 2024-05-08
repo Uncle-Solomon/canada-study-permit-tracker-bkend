@@ -17,6 +17,14 @@ export const userSchema = new mongoose.Schema<UserType>(
       type: String,
       required: true,
     },
+    secretKey: {
+      type: String,
+      required: false,
+    },
+    verified: {
+      type: Boolean,
+      required: true,
+    },
   },
   {
     timestamps: true,
