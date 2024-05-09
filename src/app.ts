@@ -6,6 +6,7 @@ import cors from "cors";
 import { swaggerSpec } from "./docs";
 import { authRoute } from "./routes/auth";
 import { caseRoute } from "./routes/case";
+import path from "path";
 
 // Create express app instance
 const app = express();
@@ -17,6 +18,11 @@ app.use(cors());
 app.use(morgan("common"));
 app.use(
   helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: false })
+);
+
+app.use(
+  "/api-docs",
+  express.static(path.join(__dirname, "node_modules/swagger-ui-dist"))
 );
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
