@@ -15,10 +15,20 @@ export const signup = async (req: Request, res: Response) => {
     let verified = false;
     const secretKey = generateSecretKey(username, email);
 
-    if (!email || !password || !username || !validator.isEmail(email)) {
+    if (
+      !email ||
+      !password ||
+      !username ||
+      !validator.isEmail(email) ||
+      password.length < 6
+    ) {
       throw badRequestError(
         "Please enter all required fields and a valid email address"
       );
+    }
+
+    if (username === password) {
+      throw badRequestError("Username and Password cannot be the same");
     }
 
     const userExists = await User.findOne({ email });
