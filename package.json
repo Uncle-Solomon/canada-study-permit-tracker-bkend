@@ -13,9 +13,6 @@
     "type": "git",
     "url": "git+https://github.com/Uncle-Solomon/canada-study-permit-tracker-bkend.git"
   },
-  "engines": {
-    "node": "18.x"
-  },
   "author": "Ameh Solomon Onyeke",
   "license": "ISC",
   "dependencies": {

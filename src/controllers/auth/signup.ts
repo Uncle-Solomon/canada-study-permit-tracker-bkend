@@ -31,7 +31,13 @@ export const signup = async (req: Request, res: Response) => {
       throw badRequestError("Username and Password cannot be the same");
     }
 
-    const userExists = await User.findOne({ email });
+    let userExists = await User.findOne({ email });
+
+    if (userExists) {
+      throw badRequestError("This user already exists");
+    }
+
+    userExists = await User.findOne({ username });
 
     if (userExists) {
       throw badRequestError("This user already exists");
@@ -40,9 +46,13 @@ export const signup = async (req: Request, res: Response) => {
     const user = new User({ email, username, password, secretKey, verified });
     user.password = await hashfunction(user.password);
     user.email = await hashfunction(user.email);
-    const response = await user.save();
+    let email_sent = await sendEmail(username, email, secretKey);
 
-    sendEmail(username, email, secretKey);
+    if (!email_sent) {
+      throw internalServerError("User signup was unsuccessful");
+    }
+
+    const response = await user.save();
 
     if (!response) {
       throw internalServerError("User signup was unsuccessful");

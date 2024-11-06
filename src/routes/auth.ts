@@ -30,7 +30,7 @@ export const authRoute = express.Router();
  *       properties:
  *         username:
  *           type: string
- *           format: email
+ *           format: string
  *         password:
  *           type: string
  *           format: password
@@ -42,7 +42,7 @@ export const authRoute = express.Router();
  *       properties:
  *         username:
  *           type: string
- *           format: email
+ *           format: string
  *         secretKey:
  *           type: string
  *           format: password

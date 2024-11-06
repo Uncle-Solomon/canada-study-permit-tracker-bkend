@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = (
+export const sendEmail = async (
   username: string,
   email: string,
   secretKey: string
@@ -36,12 +36,16 @@ The CSPT Team
 `,
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email: ", error);
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        console.error("Error sending email: ", err);
+        return false;
       } else {
         console.log("Email sent: ", info.response);
+        return true;
       }
     });
-  } catch (error) {}
+  } catch (error) {
+    return false;
+  }
 };
